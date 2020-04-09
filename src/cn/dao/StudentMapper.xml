@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.dao.StudentMapper">
+
+	<resultMap type="cn.model.Grade" id="gradeResult">
+		<id column="id" property="id"/>
+		<result column="grede" property="grede"/>
+		<result column="classroom" property="classroom.name"/>
+		<result column="name" property="student.name"/>
+		<result column="king" property="king.name"/>
+		<result column="month" property="month.name"/>
+	</resultMap>
+	
+	<select id="findStudent" resultMap="gradeResult">
+		select s.`name` ,c.name classroom,k.name king,g.grede,m.name month from grade g 
+		join class c on  c.id=g.class_id
+		join student s on s.id=g.student_id
+		join king k on k.id=g.king_id
+		join month m on m.id=g.month_id
+		where 1=1
+		<if test="name!=null and name!=''">
+			 and s.name like concat('%',#{name},'%')
+		</if>
+		<if test="classroom!=null and classroom!=''">
+			 and c.name=#{classroom}
+		</if>
+		<if test="month!=null and month!=''">
+			 and m.name =#{month}
+		</if>
+	</select>
+	
+	<insert id="add" parameterType="cn.model.Grade">
+		insert into grade(student_id,king_id,class_id,month_id,grede)
+		 values(#{student.id},#{king.id},#{classroom.id},#{month.id},#{grede})
+	</insert>
+	<select id="getStudent" resultType="cn.model.Student">
+		select * from student
+	</select>
+	<select id="getClassroom" resultType="cn.model.Classroom">
+		select * from class
+	</select>
+	<select id="getMonth" resultType="cn.model.Month">
+		select * from month
+	</select>
+	<select id="getKing" resultType="cn.model.King">
+		select * from king
+	</select>
+    <select id="find" resultMap="gradeResult">
+      select * from grade
+    </select>
+</mapper>
